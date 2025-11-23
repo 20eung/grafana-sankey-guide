@@ -93,6 +93,7 @@ FROM "snmp"
 WHERE "hostname" =~ /^$host$/
   AND "ifDescr" =~ /To/          -- 특정 문자를 포함하는 포트만 포함하는 필터링
   AND "ifDescr" !~ /^p/          -- 특정 문자로 시작하는 포트는 제거하는 필터링
+  AND "ifName" !~ /system/       -- 특정 문자로 시작하는 포트는 제거하는 필터링
   AND $timeFilter
 GROUP BY "hostname", "ifName", "ifDescr", "ifAlias"
 ```
