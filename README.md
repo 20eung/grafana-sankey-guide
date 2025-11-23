@@ -10,21 +10,73 @@ Arista 등 일부 벤더는 인터페이스 설명(Description)을 `ifAlias` OID
 **`telegraf.conf` 설정 예시:**
 
 ```toml
-[[inputs.snmp.table]]
-  name = "snmp"
-  inherit_tags = [ "hostname" ]
+  version = 2
+  community = "private"
 
-  # [Tag] Nokia 등에서 사용
-  [[inputs.snmp.table.field]]
-    name = "ifDescr"
-    oid = "IF-MIB::ifDescr"
+  interval = "30s"
+  timeout = "2s"
+  retries = 1
+
+  # 1. 시스템 이름 (Hostname)
+  [[inputs.snmp.field]]
+    name = "hostname"
+    oid = "RFC1213-MIB::sysName.0"
     is_tag = true
 
-  # [Tag] Arista/Cisco 등에서 사용 (필수 추가 ⭐)
-  [[inputs.snmp.table.field]]
-    name = "ifAlias"
-    oid = "IF-MIB::ifAlias"
-    is_tag = true
+  [[inputs.snmp.field]]
+    name = "uptime"
+    oid = "DISMAN-EVENT-MIB::sysUpTimeInstance"
+
+  # 2. 인터페이스 정보 테이블(최적화)
+  [[inputs.snmp.table]]
+    name = "snmp"
+    inherit_tags = [ "hostname" ]
+
+    # 필드 정의: 필요한 것만 정확히 가져옴.
+
+    # [태그] 인터페이스 이름
+    [[inputs.snmp.table.field]]
+      name = "ifName"
+      oid = "IF-MIB::ifName"
+      is_tag = true
+
+    # [태그] 인터페이스 설명 (Description)
+    # Nokia나 일부 장비는 Description을 여기에 저장합니다.
+    [[inputs.snmp.table.field]]
+      name = "ifDescr"
+      oid = "IF-MIB::ifDescr"
+      is_tag = true
+
+    # [태그] 인터페이스 별칭 (Alias)
+    # Arista/Cisco나 일부 장비는 Description을 여기에 저장합니다.
+    [[inputs.snmp.table.field]]
+      name = "ifAlias"
+      oid = "IF-MIB::ifAlias"
+      is_tag = true
+
+    # [태그] 필터링용 상태값 (매우 중요)
+    [[inputs.snmp.table.field]]
+      name = "ifOperStatus"
+      oid = "IF-MIB::ifOperStatus"
+      is_tag = true
+
+    # [데이터] 64-bit 카운터 (트래픽 In)
+    [[inputs.snmp.table.field]]
+      name = "ifHCInOctets"
+      oid = "IF-MIB::ifHCInOctets"
+
+    # [데이터] 64-bit 카운터 (트래픽 Out)
+    [[inputs.snmp.table.field]]
+      name = "ifHCOutOctets"
+      oid = "IF-MIB::ifHCOutOctets"
+
+  # 3. 데이터 다이어트 (필터링)
+  # 중요: 상태가 'up'(1)인 인터페이스의 데이터만 InfluxDB로 보냄.
+  # down된 포트나 관리 목적이 아닌 포트의 불필요한 0 데이터를 버려서 D
+B 부하를 줄임.
+  [inputs.snmp.tagpass]
+    ifOperStatus = ["1", "up"]
+
 ```
 
 ---
