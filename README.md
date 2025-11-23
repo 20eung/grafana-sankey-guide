@@ -1,7 +1,7 @@
 # Grafana Sankey 패널 구성 가이드: Network Traffic Flow
 
 이 문서는 Grafana의 **Sankey Panel**을 사용하여 네트워크 장비의 트래픽 흐름(Source ➔ Target)을 시각화하는 방법을 정리합니다.
-특히 **Nokia(ifDescr 사용)**와 **Arista/Cisco(ifAlias 사용)** 장비가 혼재된 환경에서 **벤더에 상관없이 인터페이스 설명을 표준화**하여 보여주는 기법을 포함합니다.
+특히 **Nokia**(`ifDescr` 사용)와 **Arista/Cisco**(`ifAlias` 사용) 장비가 혼재된 환경에서 **벤더에 상관없이 인터페이스 설명을 표준화**하여 보여주는 기법을 포함합니다.
 
 ## 1. 사전 준비: Telegraf 설정 (ifAlias 수집)
 
