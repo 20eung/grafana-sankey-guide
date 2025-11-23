@@ -72,8 +72,7 @@ Arista 등 일부 벤더는 인터페이스 설명(Description)을 `ifAlias` OID
 
   # 3. 데이터 다이어트 (필터링)
   # 중요: 상태가 'up'(1)인 인터페이스의 데이터만 InfluxDB로 보냄.
-  # down된 포트나 관리 목적이 아닌 포트의 불필요한 0 데이터를 버려서 D
-B 부하를 줄임.
+  # down된 포트나 관리 목적이 아닌 포트의 불필요한 0 데이터를 버려서 DB 부하를 줄임.
   [inputs.snmp.tagpass]
     ifOperStatus = ["1", "up"]
 
