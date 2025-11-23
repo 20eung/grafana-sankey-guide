@@ -91,8 +91,8 @@ Sankey 패널은 **Table** 형식의 데이터를 원하므로, 필요한 태그
 SELECT non_negative_derivative("ifHCInOctets", 1s) * 8 AS "bandwidth"
 FROM "snmp"
 WHERE "hostname" =~ /^$host$/
-  AND "ifDescr" =~ /To/          -- 연결 정보가 있는 포트만 필터링
-  AND "ifOperStatus" = 'up'      -- Up 상태인 포트만
+  AND "ifDescr" =~ /To/          -- 특정 문자(To)를 포함하는 포트만 포함하는 필터링
+  AND "ifDescr" !~ /^p/          -- 특정 문자(p)로 시작하는 포트는 제거하는 필터링
   AND $timeFilter
 GROUP BY "hostname", "ifDescr", "ifAlias"
 ```
