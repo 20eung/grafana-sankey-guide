@@ -107,6 +107,7 @@ GROUP BY "hostname", "ifDescr", "ifAlias"
 1. **Reduce**:
     - Mode: `Series to rows`
     - Calculations: `Last` (현재 트래픽 기준)
+    - Labels to fields: `On`
 2. **Sort by**: `Last` (Reverse) - 트래픽 높은 순 정렬
 3. **Limit**: `5` ~ `10` (상위 N개만 표시)
 
